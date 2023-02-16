@@ -1,14 +1,12 @@
-variable "name" { }
-variable "cidr" { }
+variable "name" {}
+variable "cidr" {}
 
 resource "aws_vpc" "milind" {
-  cidr_block = "${var.cidr}"
-  enable_dns_support = true
-  enable_dns_hostnames = true
+  cidr_block           = "${var.cidr}"
 
   tags = {
-        Name = "${var.name}"
-    }
+    Name = "${var.name}"
+  }
 }
 
 output "vpc_id" { value = "${aws_vpc.milind.id}" }
