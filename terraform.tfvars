@@ -1,8 +1,8 @@
 aws_region  = "us-east-1"
-aws_profile = "dev"
+aws_profile = "demo"
 
 vpc_cidr = "10.0.0.0/16"
-vpc_name = "dev-vpc"
+vpc_name = "demo-vpc"
 
 public_subnet_default  = "Public Subnet"
 private_subnet_default = "Private Subnet"
