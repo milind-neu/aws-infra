@@ -47,17 +47,71 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "public_subnet_cidrs" {
-  type        = list(string)
-  description = "Public Subnet CIDR values"
+variable "ami_pre_name" {
+  type    = string
+  default = "csye6225_*"
 }
 
-variable "private_subnet_cidrs" {
-  type        = list(string)
-  description = "Private Subnet CIDR values"
+variable "sg_name" {
+  type        = string
+  description = "Security group name"
 }
 
-variable "availability_zones" {
-  type        = list(string)
-  description = "Availability Zones"
+variable "instance_type" {
+  type        = string
+  description = "Instance type"
+  default     = "t2.micro"
+}
+
+variable "key_name" {
+  type        = string
+  description = "Name of key created using ssh "
+}
+
+variable "volume_size" {
+  type        = number
+  description = "Volume size"
+}
+
+variable "volume_type" {
+  type        = string
+  description = "Volume type"
+}
+
+variable "aws_instance_name" {
+  type        = string
+  description = "Name of instance"
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+variable "cidr_ab_subnet" {
+  type    = string
+  default = "10.0"
+}
+
+locals {
+  availability_zones = data.aws_availability_zones.available.names
+}
+
+locals {
+  cidr_c_private_subnets = 1
+  cidr_c_public_subnets  = 64
+  max_subnets            = 3
+}
+
+locals {
+  private_subnet_cidrs = [
+    for az in local.availability_zones :
+    "${var.cidr_ab_subnet}.${local.cidr_c_private_subnets + index(local.availability_zones, az)}.0/24"
+    if index(local.availability_zones, az) < local.max_subnets
+  ]
+
+  public_subnet_cidrs = [
+    for az in local.availability_zones :
+    "${var.cidr_ab_subnet}.${local.cidr_c_public_subnets + index(local.availability_zones, az)}.0/24"
+    if index(local.availability_zones, az) < local.max_subnets
+  ]
 }
