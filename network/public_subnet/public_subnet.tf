@@ -5,7 +5,7 @@ variable "vpc_id" {}
 
 resource "aws_subnet" "public_subnet" {
   count             = length(var.cidrs)
-  vpc_id            = "${var.vpc_id}"
+  vpc_id            = var.vpc_id
   cidr_block        = element(var.cidrs, count.index)
   availability_zone = element(var.azs, count.index)
 
@@ -15,4 +15,4 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
-output "public_subnets" { value = "${aws_subnet.public_subnet}" }
+output "public_subnets" { value = aws_subnet.public_subnet }

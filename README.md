@@ -1,6 +1,16 @@
 # aws-infra
 # Infrastructure as Code with Terraform
 
+## REQUIREMENTS:
+1. Create Virtual Private Cloud (VPC)Links to an external site..
+2. Create subnetsLinks to an external site. in your VPC. You must create 3 public subnets and 3 private subnets, each in a different availability zone in the same region in the same VPC.
+3. Create an Internet GatewayLinks to an external site. resource and attach the Internet Gateway to the VPC.
+4. Create a public route tableLinks to an external site.. Attach all public subnets created to the route table.
+5. Create a private route tableLinks to an external site.. Attach all private subnets created to the route table.
+6. Create a public route in the public route table created above with the destination CIDR block 0.0.0.0/0 and the internet gateway created above as the target.
+7. App Security Group: Create an EC2 security group for your EC2 instances that will host web applications. Add ingress rule to allow TCP traffic on ports 22, 80, 443, and port on which your application runs from anywhere in the world. This security group will be referred to as the application security group.
+8. Create an EC2 instance. The EC2 instance should belong to the VPC you have created. Application security group should be attached to this EC2 instance. Make sure the EBS volumes are terminated when EC2 instances are terminated.
+
 ## Install and configure the AWS CLI (macOS):
 1. Download the package:   
     `curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"`
