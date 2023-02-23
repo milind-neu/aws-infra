@@ -17,6 +17,6 @@ sg_name = "application-sg"
 
 instance_type     = "t2.micro"
 key_name          = "ec2-aws"
-volume_size       = 8
+volume_size       = 50
 volume_type       = "gp2"
 aws_instance_name = "application-instance"
