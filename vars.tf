@@ -52,9 +52,14 @@ variable "ami_pre_name" {
   default = "csye6225_*"
 }
 
-variable "sg_name" {
+variable "application_sg_name" {
   type        = string
-  description = "Security group name"
+  description = "Application Security group name"
+}
+
+variable "database_sg_name" {
+  type        = string
+  description = "Database Security group name"
 }
 
 variable "instance_type" {
@@ -90,6 +95,26 @@ data "aws_availability_zones" "available" {
 variable "cidr_ab_subnet" {
   type    = string
   default = "10.0"
+}
+
+variable "db_identifier" {
+  type        = string
+  description = "Database identifier"
+}
+
+variable "db_username" {
+  type        = string
+  description = "Database username"
+}
+
+variable "db_password" {
+  type        = string
+  description = "Database password"
+}
+
+variable "db_name" {
+  type        = string
+  description = "Database name"
 }
 
 locals {
