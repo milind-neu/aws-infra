@@ -31,33 +31,43 @@ resource "aws_instance" "webapp_instance" {
   tags = {
     Name = var.aws_instance_name
   }
-  // templatefile("./user_data.tpl", {})
-  user_data = <<EOF
+  user_data            =  <<EOF
       #!/bin/bash
 
       # Redirect output to a log file
-      exec &> /var/log/my-script.log
+      exec &> /var/log/user-data-script.log
 
-      echo 'export HOST=${aws_db_instance.postgres_instance.address}' >>/home/ec2-user/.bash_profile     
-      echo 'export DB=${var.db_name}' >>/home/ec2-user/.bash_profile
-      echo 'export DB_USER=${var.db_username}' >>/home/ec2-user/.bash_profile
-      echo 'export PASSWORD=${var.db_password}' >>/home/ec2-user/.bash_profile
-      echo 'export S3_REGION=${var.aws_region}' >>/home/ec2-user/.bash_profile
-      echo 'export S3_BUCKET_NAME=${aws_s3_bucket.csye6225_s3_bucket.id}' >>/home/ec2-user/.bash_profile
+      cd /home/ec2-user/webapp
+      touch .env
 
-      echo "Setting environment variables"
-      source /home/ec2-user/.bash_profile
+      echo 'HOST=${aws_db_instance.postgres_instance.address}' >>/home/ec2-user/webapp/.env
+      echo 'DB=${var.db_name}' >>/home/ec2-user/webapp/.env
+      echo 'DB_USER=${var.db_username}' >>/home/ec2-user/webapp/.env
+      echo 'PASSWORD=${var.db_password}' >>/home/ec2-user/webapp/.env
+      echo 'S3_REGION=${var.aws_region}' >>/home/ec2-user/webapp/.env
+      echo 'S3_BUCKET_NAME=${aws_s3_bucket.csye6225_s3_bucket.id}' >>/home/ec2-user/webapp/.env
 
       echo "Installing Node.js and npm"
+      yum update -y 
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
       . /home/ec2-user/.nvm/nvm.sh
       nvm install 16
 
-      echo "Installing pm2"
-      /home/ec2-user/.nvm/versions/node/v16.19.1/bin/npm install -g pm2
+      # Install Sequelize CLI globally
+      npm install -g sequelize-cli
 
-      /home/ec2-user/.nvm/versions/node/v16.19.1/bin/pm2 restart webapp
+      cd /home/ec2-user/webapp
+      /home/ec2-user/.nvm/versions/node/v16.19.1/bin/sequelize-cli db:migrate
+
+      echo "reload Systemd configuration files"
+      systemctl daemon-reload
+
+      echo "enable and start the service"
+      systemctl enable pm2-ec2-user.service
+      systemctl start pm2-ec2-user.service
+      systemctl status pm2-ec2-user.service
+
   EOF 
 
-  iam_instance_profile = aws_iam_instance_profile.ec2_csye6225_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_csye6225_profile.name 
 }
