@@ -117,6 +117,10 @@ variable "db_name" {
   description = "Database name"
 }
 
+variable "domain_name" {
+  type = string
+}
+
 locals {
   availability_zones = data.aws_availability_zones.available.names
 }
