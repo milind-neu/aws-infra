@@ -26,3 +26,5 @@ db_identifier = "csye6225"
 db_username   = "csye6225"
 db_password   = "Milind1996"
 db_name       = "csye6225"
+
+domain_name = "demo.milindsharma.me"

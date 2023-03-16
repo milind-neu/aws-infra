@@ -31,7 +31,7 @@ resource "aws_instance" "webapp_instance" {
   tags = {
     Name = var.aws_instance_name
   }
-  user_data            =  <<EOF
+  user_data = <<EOF
       #!/bin/bash
 
       # Redirect output to a log file
@@ -47,20 +47,12 @@ resource "aws_instance" "webapp_instance" {
       echo 'S3_REGION=${var.aws_region}' >>/home/ec2-user/webapp/.env
       echo 'S3_BUCKET_NAME=${aws_s3_bucket.csye6225_s3_bucket.id}' >>/home/ec2-user/webapp/.env
 
-      echo "Installing Node.js and npm"
-      yum update -y 
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-      . /home/ec2-user/.nvm/nvm.sh
-      nvm install 16
+      export PATH=$PATH:/home/ec2-user/.nvm/versions/node/v16.19.1/bin
 
-      # Install Sequelize CLI globally
-      npm install -g sequelize-cli
+      pm2 kill
 
       cd /home/ec2-user/webapp
-      /home/ec2-user/.nvm/versions/node/v16.19.1/bin/sequelize-cli db:migrate
-
-      echo "reload Systemd configuration files"
-      systemctl daemon-reload
+      /home/ec2-user/webapp/node_modules/sequelize-cli/lib/sequelize db:migrate
 
       echo "enable and start the service"
       systemctl enable pm2-ec2-user.service
@@ -69,5 +61,5 @@ resource "aws_instance" "webapp_instance" {
 
   EOF 
 
-  iam_instance_profile = aws_iam_instance_profile.ec2_csye6225_profile.name 
+  iam_instance_profile = aws_iam_instance_profile.ec2_csye6225_profile.name
 }
