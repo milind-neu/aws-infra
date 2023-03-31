@@ -59,6 +59,14 @@ resource "aws_instance" "webapp_instance" {
       systemctl start pm2-ec2-user.service
       systemctl status pm2-ec2-user.service
 
+
+      echo "Configuring amazon-cloudwatch-agent"
+      sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+        -a fetch-config \
+        -m ec2 \
+        -c file:/opt/cloudwatch_config.json \
+        -s
+
   EOF 
 
   iam_instance_profile = aws_iam_instance_profile.ec2_csye6225_profile.name
