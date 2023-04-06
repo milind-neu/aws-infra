@@ -65,7 +65,7 @@ resource "aws_launch_template" "asg_lt" {
     }
   }
 
-  disable_api_termination = true
+  disable_api_termination = false
 
   tags = {
     Name = var.aws_instance_name
