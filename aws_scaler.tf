@@ -46,14 +46,14 @@ resource "aws_autoscaling_policy" "asg_cpu_down_policy" {
 
 resource "aws_cloudwatch_metric_alarm" "cpu_high_utilization_metric" {
   alarm_name          = "cpu_high_utilization_metric"
-  alarm_description   = "Alarm to increment ec2-instance by 1 when average CPU utilization exceeds 5%"
+  alarm_description   = "Alarm to increment ec2-instance by 1 when average CPU utilization exceeds 3%"
   evaluation_periods  = "1"
   metric_name         = var.autoscale_metric_name
   comparison_operator = "GreaterThanThreshold"
   namespace           = var.autoscale_metric_namespace
   period              = "120"
   statistic           = "Average"
-  threshold           = "5"
+  threshold           = "3"
   alarm_actions       = [aws_autoscaling_policy.asg_cpu_up_policy.arn]
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg_webapp.id
@@ -62,14 +62,14 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high_utilization_metric" {
 
 resource "aws_cloudwatch_metric_alarm" "cpu_low_utilization_metric" {
   alarm_name          = "cpu_low_utilization_metric"
-  alarm_description   = "Alarm to decrement ec2-instance by 1 when average CPU utilization goes below 3%"
+  alarm_description   = "Alarm to decrement ec2-instance by 1 when average CPU utilization goes below 1%"
   evaluation_periods  = "1"
   metric_name         = var.autoscale_metric_name
   comparison_operator = "LessThanThreshold"
   namespace           = var.autoscale_metric_namespace
   period              = "120"
   statistic           = "Average"
-  threshold           = "3"
+  threshold           = "1"
   alarm_actions       = [aws_autoscaling_policy.asg_cpu_down_policy.arn]
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg_webapp.id
