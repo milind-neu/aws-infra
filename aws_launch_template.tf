@@ -1,37 +1,5 @@
-data "aws_ami" "latest" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = [var.ami_pre_name]
-  }
-}
-
-resource "aws_instance" "webapp_instance" {
-  depends_on = [
-    aws_db_instance.postgres_instance
-  ]
-
-  ami           = data.aws_ami.latest.id
-  instance_type = var.instance_type
-  key_name      = var.key_name
-  count         = 1
-
-  subnet_id                   = module.public_subnet.public_subnets[0].id
-  vpc_security_group_ids      = [aws_security_group.application_sg.id]
-  associate_public_ip_address = true
-
-  root_block_device {
-    volume_size = var.volume_size
-    volume_type = var.volume_type
-    encrypted   = true
-  }
-  disable_api_termination = true
-
-  tags = {
-    Name = var.aws_instance_name
-  }
-  user_data = <<EOF
+data "template_file" "user_data_sh" {
+  template = <<EOF
       #!/bin/bash
 
       # Redirect output to a log file
@@ -67,7 +35,46 @@ resource "aws_instance" "webapp_instance" {
         -c file:/opt/cloudwatch_config.json \
         -s
 
-  EOF 
+      sudo systemctl enable amazon-cloudwatch-agent 
+      sudo systemctl start amazon-cloudwatch-agent
 
-  iam_instance_profile = aws_iam_instance_profile.ec2_csye6225_profile.name
+  EOF 
+}
+
+resource "aws_launch_template" "asg_lt" {
+  depends_on = [
+    aws_db_instance.postgres_instance
+  ]
+
+  image_id      = data.aws_ami.latest.id
+  instance_type = var.instance_type
+  key_name      = var.key_name
+
+  network_interfaces {
+    associate_public_ip_address = true
+    subnet_id                   = module.public_subnet.public_subnets[0].id
+    security_groups             = [aws_security_group.application_sg.id]
+  }
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = var.volume_size
+      volume_type = var.volume_type
+      encrypted   = true
+    }
+  }
+
+  disable_api_termination = true
+
+  tags = {
+    Name = var.aws_instance_name
+  }
+
+  user_data = base64encode(data.template_file.user_data_sh.rendered)
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ec2_csye6225_profile.name
+  }
+
 }

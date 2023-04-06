@@ -62,6 +62,11 @@ variable "database_sg_name" {
   description = "Database Security group name"
 }
 
+variable "load_balancer_sg_name" {
+  type        = string
+  description = "Load Balancer Security group name"
+}
+
 variable "instance_type" {
   type        = string
   description = "Instance type"
@@ -117,6 +122,21 @@ variable "db_name" {
   description = "Database name"
 }
 
+variable "policy_type" {
+  type = string
+}
+
+variable "adjustment_type" {
+  type = string  
+}
+
+variable "autoscale_metric_name" {
+  type = string
+}
+
+variable "autoscale_metric_namespace" {
+  type = string
+}
 variable "domain_name" {
   type = string
 }

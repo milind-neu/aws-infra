@@ -15,6 +15,7 @@ private_route_table_name = "Private Route Table"
 
 application_sg_name = "application-sg"
 database_sg_name    = "database-sg"
+load_balancer_sg_name = "load-balancer-sg"
 
 instance_type     = "t2.micro"
 key_name          = "ec2-aws"
@@ -28,3 +29,8 @@ db_password   = "Milind1996"
 db_name       = "csye6225"
 
 domain_name = "demo.milindsharma.me"
+
+policy_type = "SimpleScaling"
+adjustment_type = "ChangeInCapacity"
+autoscale_metric_name = "CPUUtilization"
+autoscale_metric_namespace = "AWS/EC2"
