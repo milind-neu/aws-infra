@@ -13,8 +13,8 @@ public_route_table_cidr  = "0.0.0.0/0"
 public_route_table_name  = "Public Route Table"
 private_route_table_name = "Private Route Table"
 
-application_sg_name = "application-sg"
-database_sg_name    = "database-sg"
+application_sg_name   = "application-sg"
+database_sg_name      = "database-sg"
 load_balancer_sg_name = "load-balancer-sg"
 
 instance_type     = "t2.micro"
@@ -30,7 +30,10 @@ db_name       = "csye6225"
 
 domain_name = "demo.milindsharma.me"
 
-policy_type = "SimpleScaling"
-adjustment_type = "ChangeInCapacity"
-autoscale_metric_name = "CPUUtilization"
+policy_type                = "SimpleScaling"
+adjustment_type            = "ChangeInCapacity"
+autoscale_metric_name      = "CPUUtilization"
 autoscale_metric_namespace = "AWS/EC2"
+ssl_certificate_arn        = "arn:aws:acm:us-east-1:452684689716:certificate/2d672523-a4a6-43d9-8a8b-12345f472d7c"
+
+lt_name = "asg_launch_config"

@@ -53,3 +53,10 @@
 
 6. Destroy the created infrastructure:
     `terraform destroy`
+
+## Secure WebApp Endpoints using SSL Certificates
+
+To import the SSL certificate requested from `Namecheap` into `ACM (Certificate Manager), run the following command in the aws-cli - 
+```
+aws acm import-certificate --profile demo --region us-east-1 --certificate fileb://demo_milindsharma_me.crt --private-key fileb://private_key.pem --certificate-chain fileb://demo_milindsharma_me.ca-bundle
+```

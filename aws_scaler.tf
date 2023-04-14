@@ -18,6 +18,14 @@ resource "aws_autoscaling_group" "asg_webapp" {
     propagate_at_launch = true
   }
 
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
+  }
+
+
   lifecycle {
     create_before_destroy = true
   }

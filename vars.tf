@@ -127,7 +127,7 @@ variable "policy_type" {
 }
 
 variable "adjustment_type" {
-  type = string  
+  type = string
 }
 
 variable "autoscale_metric_name" {
@@ -163,4 +163,12 @@ locals {
     "${var.cidr_ab_subnet}.${local.cidr_c_public_subnets + index(local.availability_zones, az)}.0/24"
     if index(local.availability_zones, az) < local.max_subnets
   ]
+}
+
+variable "ssl_certificate_arn" {
+  type = string
+}
+
+variable "lt_name" {
+  type = string
 }
