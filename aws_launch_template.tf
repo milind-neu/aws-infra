@@ -50,6 +50,8 @@ resource "aws_launch_template" "asg_lt" {
   instance_type = var.instance_type
   key_name      = var.key_name
 
+  name = var.lt_name
+
   network_interfaces {
     associate_public_ip_address = true
     subnet_id                   = module.public_subnet.public_subnets[0].id
@@ -62,6 +64,7 @@ resource "aws_launch_template" "asg_lt" {
       volume_size = var.volume_size
       volume_type = var.volume_type
       encrypted   = true
+      kms_key_id  = aws_kms_key.ebs_cmk.arn
     }
   }
 

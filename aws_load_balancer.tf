@@ -11,7 +11,7 @@ resource "aws_lb" "webapp_lb" {
 }
 
 resource "aws_lb_target_group" "webapp_lb_tg" {
-  name = "webapp-tg"
+  name        = "webapp-tg"
   port        = 3000
   protocol    = "HTTP"
   target_type = "instance"
@@ -32,6 +32,19 @@ resource "aws_lb_target_group" "webapp_lb_tg" {
 resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.webapp_lb.arn
   port              = "80"
+
+  default_action {
+    target_group_arn = aws_lb_target_group.webapp_lb_tg.arn
+    type             = "forward"
+  }
+}
+
+resource "aws_lb_listener" "https_listener" {
+  load_balancer_arn = aws_lb.webapp_lb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.ssl_certificate_arn
 
   default_action {
     target_group_arn = aws_lb_target_group.webapp_lb_tg.arn
